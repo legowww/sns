@@ -3,6 +3,8 @@ package com.example.sns.controller.response;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.stream.Stream;
+
 @AllArgsConstructor
 @Getter
 public class Response<T> {
@@ -20,5 +22,20 @@ public class Response<T> {
         return new Response("success", result);
     }
 
+    public static Response<Void> success() {
+        return new Response<Void>("success", null);
+    }
+
+
+    public String toStream() {
+        if (result == null) {
+            return "{" +
+                    "\"resultCode\": "+ "\"" + resultCode + "\"," +
+                    "\"result\":" + null + "}";
+        }
+        return "{" +
+                "\"resultCode\": "+ "\"" + resultCode + "\"," +
+                "\"result\":" + result + "}";
+    }
 }
 

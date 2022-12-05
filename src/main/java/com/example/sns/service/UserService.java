@@ -25,25 +25,32 @@ public class UserService {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
-    @Value("${jwt.token.expired-time-ms}")
+    @Value("${jwt.token-expired-time-ms}")
     private Long expiredTimeMs;
 
+
+    public User loadUserByUserName(String userName) {
+        return userEntityRepository.findByUserName(userName).map(User::fromEntity).orElseThrow(() ->
+                new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
+    }
+
+
     @Transactional
-    public User join(String username, String password) {
+    public User join(String userName, String password) {
         //회원가입하려는 userName으로 회원가입된 user가 있는지 체크, Optional<T> 클래스일 경우 ifPresent 사용가능, JPA 기본 메서드인 findById 등은 기본이 Optional
-        userEntityRepository.findByUserName(username).ifPresent(it -> {
-            throw new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, String.format("%s is duplicated", username)); //각 예외에 대한 이유가 다르다.
+        userEntityRepository.findByUserName(userName).ifPresent(it -> {
+            throw new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, String.format("%s is duplicated", userName)); //각 예외에 대한 이유가 다르다.
         });
 
         //회원가입 진행, 비밀번호 저장할 때 암호화에서 저장
-        UserEntity userEntity = userEntityRepository.save(UserEntity.of(username, encoder.encode(password)));
+        UserEntity userEntity = userEntityRepository.save(UserEntity.of(userName, encoder.encode(password)));
         return User.fromEntity(userEntity);
     }
 
-    public String login(String username, String password) {
+    public String login(String userName, String password) {
         //회원가입 여부 체크, Optional<T> 클래스일 경우 orElseThrow 사용가능
-        UserEntity userEntity = userEntityRepository.findByUserName(username)
-                .orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", username)));
+        UserEntity userEntity = userEntityRepository.findByUserName(userName)
+                .orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
 
         //비밀번호 체크
         if(!encoder.matches(password, userEntity.getPassword())) {
@@ -51,7 +58,7 @@ public class UserService {
         }
 
         //토큰 생성 후 반환
-        String token = JwtTokenUtils.generateToken(username, secretKey, expiredTimeMs);
+        String token = JwtTokenUtils.generateToken(userName, secretKey, expiredTimeMs);
         return token;
     }
 }
