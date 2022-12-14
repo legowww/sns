@@ -13,7 +13,9 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not founded"), //404
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "Password is invalid"), //401
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"), //500
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Token is invalid");
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Token is invalid"),
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "Post not founded"),
+    INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "Permission is invalid");
 
 
 

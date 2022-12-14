@@ -35,7 +35,7 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
                 //매번 요청때마다 필터를 사용하여 들어온 토큰이 어떤 유저를 가르키는지 체크하는 로직 사용
                 //addFilterBefore: UsernamePasswordAuthenticationFilter 이전에 JwtTokenFilter 적용하겠다.
                 .addFilterBefore(new JwtTokenFilter(key, userService), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling()
+                .exceptionHandling() //에러가 발생하면 entryPoint 로 보내줘야 한다.
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint());
 
     }

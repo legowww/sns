@@ -3,7 +3,6 @@ package com.example.sns.controller.response;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.stream.Stream;
 
 @AllArgsConstructor
 @Getter
