@@ -11,11 +11,16 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.Instant;
 
+/**
+ * - @Entity(name ="")의 경우 말그대로 엔티티의 이름을 정할때 사용됩니다. 이는 HQL에서 엔티티를 식별할 이름을 정합니다.
+ * - @Table(name ="")의 경우 Database에 생성될 table의 이름을 지정할때 사용됩니다.
+ * - @Table이 없고 @Entity(name ="")만 존재하는 경우, @Entity의 name 속성에 의해, Entity와 Table 이름이 모두 결정됩니다.
+ */
 @Entity
-@Table(name = "\"user\"") //실제 테이블 이름 "user"
+@Table(name = "\"user\"")
 @Getter
 @Setter
-@SQLDelete(sql = "UPDATED \"user\" SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id=?")
 @Where(clause = "deleted_at is NULL") //삭제되지 않는 것만 where
 public class UserEntity {
     @Id
