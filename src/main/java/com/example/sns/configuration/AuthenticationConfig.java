@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,12 +23,21 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
     private String key;
 
 
+
+    //정적화면(favicon 등 과 같은) 프론트 화면은 필터 적용하고 싶지 않을 때는 web.ignoring()를 사용한다.
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        //ignoring 을 첫번째로 만나게 된다. 정규 표현식에 해당하는 표현들은 인증절차를 건너뛴다.
+        //정규식은 /api 가 아닌것들은 인증 없이 통과시킨다 로 해석할 수 있다.
+        web.ignoring().regexMatchers("^(?!/api/).*");
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/*/users/join", "/api/*/users/login").permitAll()
-                .antMatchers("/api/**").authenticated()
+                .antMatchers("/api/*/users/join", "/api/*/users/login").permitAll() //이 경우 허가
+                .antMatchers("/api/**").authenticated() //이 경우 인증절차
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) //세션 사용 안함
