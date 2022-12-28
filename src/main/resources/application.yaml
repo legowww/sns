@@ -16,3 +16,9 @@ jwt:
   secret-key: phh-sns-application-2022.secret_key
   # 30days
   token-expired-time-ms: 2592000000
+
+
+spring:
+  redis:
+    host: localhost
+    port: 6379
